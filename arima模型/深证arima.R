@@ -16,12 +16,27 @@ pacf(dlogSZPri, lag = 20)
 # 观察数据ar使用1阶，ma采用1阶，建立arima(1, 0, 1)模型
 SZ_model = arima(dlogSZPri, order = c(1, 0, 1), include.mean = F)
 SZ_model
-Box.test(SZ_model$residuals) # p值显著大于0.05，残差为白噪声序列，选取的模型合适
+Box.test(SZ_model$residuals) # p值显著大于0.05，残差为白噪声序列，选取的模型合适，不需要用garch模型
+
 #计算原本数据的对数收益率
-da_forcast = da4[, 3]
-for(i in 2168: length(da_forcast)) {
-  da_forcast[i - 1] = da_forcast[i]/da_forcast[i - 1]
-  da_forcast[i - 1] = log(da_forcast[i - 1])
+logr = diff(log(da4[c(2168:2468), 3]))
+# 短期预测
+SZ_arima_forecast = forecast(SZ_model, h = 250)
+head(logr)    
+short_di_sum = 0
+for(i in 1: 5) {
+  short_di_sum = short_di_sum + abs(SZ_arima_forecast[[4]][i] - logr[i])
 }
-real_rate = da_forcast[c(2167: length(da_forcast))]
-head(real_rate)
+short_di_sum
+# 中期预测
+middle_di_sum = 0
+for(i in 1: 60) {
+  middle_di_sum = middle_di_sum + abs(SZ_arima_forecast[[4]][i] - logr[i])
+}
+middle_di_sum
+# 长期预测
+long_di_sum = 0
+for(i in 1: 250) {
+  long_di_sum = long_di_sum + abs(SZ_arima_forecast[[4]][i] - logr[i])
+}
+long_di_sum
