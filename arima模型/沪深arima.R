@@ -40,3 +40,14 @@ for(i in 1: 250) {
   long_di_sum = long_di_sum + abs(HS_arima_forecast[[4]][i] - logr[i])
 }
 long_di_sum
+# 建立向量将预测值取出方便画图
+forecast.val = c(1: 250)
+for(i in 1: 250) {
+  forecast.val[i] = HS_arima_forecast[[4]][i]
+}
+head(forecast.val)
+tail(forecast.val)
+# 画图样例
+par(mfcol = c(1, 1))
+plot(logr[c(1: 250)],type= 'l',main = "comparison", xlab = 'time series', ylab='log return') # 实际值
+lines(forecast.val, col= 'red') # 预测值

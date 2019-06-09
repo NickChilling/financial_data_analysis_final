@@ -1,5 +1,6 @@
 setwd("c:/Users/AresL/Desktop/financial_data_analysis_final/data")
 library(tseries)
+library(ggplot2)
 library(forecast)
 da2 = read.csv("中小板.csv", header = T)
 head(da2)
@@ -21,7 +22,8 @@ Box.test(ZXB_model$residuals) # p值显著大于0.05，残差为白噪声序列�
 logr = diff(log(da2[c(2168:2468), 3]))
 # 短期预测
 ZXB_arima_forecast = forecast(ZXB_model, h = 250)
-head(logr)    
+#autoplot(ZXB_arima_forecast)
+#head(logr)    
 short_di_sum = 0
 for(i in 1: 5) {
   short_di_sum = short_di_sum + abs(ZXB_arima_forecast[[4]][i] - logr[i])
@@ -39,3 +41,14 @@ for(i in 1: 250) {
   long_di_sum = long_di_sum + abs(ZXB_arima_forecast[[4]][i] - logr[i])
 }
 long_di_sum
+# 建立向量将预测值取出方便画图
+forecast.val = c(1: 250)
+for(i in 1: 250) {
+  forecast.val[i] = ZXB_arima_forecast[[4]][i]
+}
+head(forecast.val)
+tail(forecast.val)
+# 画图样例
+par(mfcol = c(1, 1))
+plot(logr[c(1: 250)],type= 'l',main = "comparison", xlab = 'time series', ylab='log return') # 实际值
+lines(forecast.val, col= 'red') # 预测值
