@@ -1,4 +1,4 @@
-setwd("c:/Users/AresL/Desktop/financial_data_analysis_final/data")
+setwd("c:/Users/zanzh/OneDrive/研一下/金融数据分析/LSTM_VS_ARIMA/data/")
 library(tseries)
 library(forecast)
 da1 = read.csv("上证50.csv", header = T)
@@ -44,3 +44,4 @@ long_di_sum
 # 画图样例
 plot(logr,type= 'l',main = "comparison", xlab = 'time series', ylab='log return') # 实际值
 lines(SZ50_arima_forecast[[4]], col= 'red') # 预测值
+acf(SZ50_arima_forecast[[4]])

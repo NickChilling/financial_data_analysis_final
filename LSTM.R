@@ -157,6 +157,6 @@ acf(train_predict2) #lstm产生的序列前后相关性太大
 # 数据可视化, 模型对比
 plot(y,type='l', main='各模型预测值对比',xlab='time series',ylab = 'log return')
 lines(train_predict,lty=2,col ='green')
-lines(train_predict2,lty=2,col = 'blue')f
+lines(train_predict2,lty=2,col = 'blue')
 lines(train_predict3,lty=2,col = 'yellow')
 lines(train_predict4,lty=2,col = 'red')
