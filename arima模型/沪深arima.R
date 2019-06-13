@@ -50,4 +50,5 @@ tail(forecast.val)
 # 画图样例
 par(mfcol = c(1, 1))
 plot(logr[c(1: 250)],type= 'l',main = "comparison", xlab = 'time series', ylab='log return') # 实际值
+
 lines(forecast.val, col= 'red') # 预测值

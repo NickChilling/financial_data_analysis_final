@@ -1,12 +1,11 @@
 library(keras)
+
 setwd("c:/users/zanzh/OneDrive/研一下/金融数据分析/LSTM_VS_ARIMA/")
 hs300 <- read.csv("data/沪深300.csv")
 sz50 <- read.csv("data/上证50.csv", encoding = "UTF-8")
 szcz <- read.csv("data/深证.csv",encoding = "UTF-8")
 zxb <- read.csv('data/中小板.csv',encoding = "UTF-8")
 
-
-# arima backtest 是怎么跑的
 
 # define global variable
 raw_data <- hs300
@@ -29,7 +28,7 @@ plot(ts_diff,lg_r,type='l',xlab= 'time series', ylab = 'log return',main='沪深
 split.dataset <-function(dataset,split_ratio){
   samples = dim(dataset)[1]
   split_index = as.integer(samples*split_ratio)
-  return list(train = dataset[1:split_index,], test=dataset[split_index:samples,]
+  return(list(train = dataset[1:split_index,], test=dataset[split_index:samples,]))
 }
 
 # data normalization
@@ -83,7 +82,7 @@ model_stateful %>%
     loss = 'mse',
     optimizer = optimizer_adam(0.001),
     metrics = list('mean_absolute_percentage_error') ) 
-for (i in 1:50){
+for (i in 1:20){
   model_stateful %>% 
     fit(x,y,epoch = 1, batch_size =batch_size,
               verbose =2,shuffle = FALSE)
@@ -103,7 +102,7 @@ model_2 %>%
 model_2 %>%
   compile(loss='mse',optimizer = optimizer_sgd(0.001),
           metrics= list("mean_absolute_percentage_error")) %>%
-  fit(x,y,epoch=10, batch_size=batch_size,verbose=2,validation_split=0.2)
+  fit(x,y,epoch=20, batch_size=batch_size,verbose=2,validation_split=0.2)
 train_predict2 <- model_2 %>% predict(x)
 
 # model referred from the papaer
@@ -137,7 +136,7 @@ model_3 %>%
 model_3 %>%
   compile(loss= 'mse',optimizer = optimizer_adam(0.001),
           metrics = list("mean_absolute_percentage_error")) %>%
-  fit(x_bn,y_bn,epoch = 100,batch_size = batch_size_3,verbose=2,validation_split=0.2)
+  fit(x_bn,y_bn,epoch = 50,batch_size = batch_size_3,verbose=2,validation_split=0.2)
 train_predict3 <-model_3%>% predict(x_bn) # 292
 
 # simple lstm 
@@ -148,9 +147,9 @@ model_4 %>%
   layer_dense(units=1) %>%
   summary()
 model_4 %>%
-  compile(loss=mean_absolute_percentage_error,optimizer = optimizer_sgd(0.001),
+  compile(loss="mse",optimizer = optimizer_sgd(0.001),
           metrics = list('mean_absolute_percentage_error')) %>%
-  fit(x_bn,y_bn,epoch = 100,batch_size = batch_size_3,verbose =2,validation_split=0.2)
+  fit(x_bn,y_bn,epoch = 50,batch_size = batch_size_3,verbose =2,validation_split=0.2)
 train_predict4 <- model_4%>% predict(x_bn)
 
 acf(train_predict2) #lstm产生的序列前后相关性太大
